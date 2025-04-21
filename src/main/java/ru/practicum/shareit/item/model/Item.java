@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * TODO Sprint add-controllers.
+ */
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -15,5 +18,4 @@ public class Item {
     Boolean available;
     Long ownerId;
     Long requestId;
-    int rentalCount;
 }

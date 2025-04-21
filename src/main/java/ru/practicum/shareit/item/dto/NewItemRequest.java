@@ -17,13 +17,11 @@ public class NewItemRequest {
     @NotBlank(message = "Описание не может быть пустым")
     String description;
 
-    @NotNull(message = "Отсутствует обязательный параметр \"Статус аренды\"")
+    @NotNull(message = "Статус аренды не может быть пустым")
     Boolean available;
 
+    @NotNull(message = "ID владельца не может быть пустым")
     Long ownerId;
 
     Long requestId;
-
-    @Builder.Default
-    int rentalCount = 0;
 }

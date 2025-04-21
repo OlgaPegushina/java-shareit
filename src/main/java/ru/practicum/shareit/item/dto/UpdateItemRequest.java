@@ -13,7 +13,8 @@ public class UpdateItemRequest {
     String name;
     String description;
     Boolean available;
-    int rentalCount;
+    Long ownerId;
+    Long requestId;
 
     public boolean hasName() {
         return !(name == null || name.isBlank());
@@ -25,5 +26,9 @@ public class UpdateItemRequest {
 
     public boolean hasAvailable() {
         return !(available == null);
+    }
+
+    public boolean hasRequestId() {
+        return !(requestId == null  || requestId == 0);
     }
 }
