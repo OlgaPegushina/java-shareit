@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserRepositoryLocalImpl implements UserRepository {
+public class UserRepositoryInMemoryImpl implements UserRepository {
     Map<Long, User> users = new HashMap<>();
     Map<String, User> usersByEmail = new HashMap<>();
 
@@ -46,13 +46,7 @@ public class UserRepositoryLocalImpl implements UserRepository {
     @Override
     public User update(User user) {
         Long userId = user.getId();
-        User userToUpdate = users.get(userId);
-        if (user.getName() != null && !user.getName().isBlank()) {
-            userToUpdate.setName(user.getName());
-        }
-        if (user.getEmail() != null && !user.getEmail().isBlank()) {
-            userToUpdate.setEmail(user.getEmail());
-        }
+        users.put(userId, user);
         return users.get(userId);
     }
 

@@ -1,7 +1,9 @@
 package ru.practicum.shareit.user.dto;
 
 import jakarta.validation.constraints.Email;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 @Data
@@ -16,10 +18,10 @@ public class UpdateUserRequest {
     String email;
 
     public boolean hasName() {
-        return ! (name == null || name.isBlank());
+        return !(name == null || name.isBlank());
     }
 
     public boolean hasEmail() {
-        return ! (email == null || email.isBlank());
+        return !(email == null || email.isBlank());
     }
 }

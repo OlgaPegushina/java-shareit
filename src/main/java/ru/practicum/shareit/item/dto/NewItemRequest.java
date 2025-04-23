@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -16,11 +17,13 @@ public class NewItemRequest {
     @NotBlank(message = "Описание не может быть пустым")
     String description;
 
-    @NotBlank(message = "Статус аренды не может быть пустым")
+    @NotNull(message = "Отсутствует обязательный параметр \"Статус аренды\"")
     Boolean available;
 
-    @NotBlank(message = "ID владельца не может быть пустым")
     Long ownerId;
 
     Long requestId;
+
+    @Builder.Default
+    int rentalCount = 0;
 }

@@ -3,6 +3,7 @@ package ru.practicum.shareit.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,6 +20,18 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ExceptionResponse repositoryDuplicatedDataExceptionHandle(Exception e) {
         return new ExceptionResponse("Ресурс дублируется", e.getMessage());
+    }
+
+    @ExceptionHandler({InternalServerException.class, Throwable.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ExceptionResponse internalServerExceptionHandle(InternalServerException e) {
+        return new ExceptionResponse("Ошибка сервера", e.getMessage());
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class, ValidationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse validationExceptionHandle(Exception e) {
+        return new ExceptionResponse("Ошибка валидации", e.getMessage());
     }
 
     @Getter

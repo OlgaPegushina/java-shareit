@@ -45,14 +45,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(Long userId, UpdateUserRequest userDto) {
-        validateUserExist(userId);
+        User user = validateUserExist(userId);
         validateEmailExist(userDto.getEmail());
-        User updatedUser = userRepository.findById(userId)
-                .map(user -> updateUserFields(userId, userDto))
-                .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id %d не найден.", userId)));
-        updatedUser = userRepository.update(updatedUser);
-        return mapToUserDto(updatedUser);
-
+        updateUserFields(user, userDto);
+        userRepository.update(user);
+        return mapToUserDto(user);
     }
 
     @Override
@@ -61,7 +58,8 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    private User validateUserExist(Long userId) {
+    @Override
+    public User validateUserExist(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id %d не найден.", userId)));
     }
