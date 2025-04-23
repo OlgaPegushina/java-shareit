@@ -17,17 +17,14 @@ public final class UserMapper {
                .build();
     }
 
-    public static User updateUserFields(Long userId, UpdateUserRequest requestUserDto) {
-         User userUpdate = User.builder()
-                .id(userId)
-                .build();
+    public static User updateUserFields(User user, UpdateUserRequest requestUserDto) {
         if (requestUserDto.hasEmail()) {
-            userUpdate.setEmail(requestUserDto.getEmail());
+            user.setEmail(requestUserDto.getEmail());
         }
         if (requestUserDto.hasName()) {
-            userUpdate.setName(requestUserDto.getName());
+            user.setName(requestUserDto.getName());
         }
-        return userUpdate;
+        return user;
     }
 
     public static User mapToUserNew(NewUserRequest requestUserDto) {

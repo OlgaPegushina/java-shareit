@@ -46,18 +46,12 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
     @Override
     public User update(User user) {
         Long userId = user.getId();
-        String checkEmail = users.get(userId).getEmail();
-        if (!checkEmail.equals(user.getEmail())) {
-            usersByEmail.remove(checkEmail);
-        }
-        usersByEmail.put(user.getEmail(), user);
         users.put(userId, user);
         return users.get(userId);
     }
 
     @Override
     public void deleteById(Long userId) {
-        usersByEmail.remove(users.get(userId).getEmail());
         users.remove(userId);
     }
 

@@ -18,4 +18,5 @@ public class Item {
     Boolean available;
     Long ownerId;
     Long requestId;
+    int rentalCount;
 }
