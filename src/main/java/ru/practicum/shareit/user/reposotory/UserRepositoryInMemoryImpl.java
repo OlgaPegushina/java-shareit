@@ -57,6 +57,7 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
 
     @Override
     public void deleteById(Long userId) {
+        usersByEmail.remove(users.get(userId).getEmail());
         users.remove(userId);
     }
 
