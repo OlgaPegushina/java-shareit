@@ -30,7 +30,8 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(Long userId, NewItemRequest itemDto) {
         userService.validateUserExist(userId);
         Item item = mapToItemNew(itemDto);
-        return mapToItemDto(itemRepository.save(userId, item));
+        item.setOwnerId(userId);
+        return mapToItemDto(itemRepository.save(item));
     }
 
     @Override

@@ -36,7 +36,7 @@ public class ErrorHandler {
 
     @Getter
     @AllArgsConstructor
-    static class ExceptionResponse {
+    public static class ExceptionResponse {
         String error;
         String description;
     }
