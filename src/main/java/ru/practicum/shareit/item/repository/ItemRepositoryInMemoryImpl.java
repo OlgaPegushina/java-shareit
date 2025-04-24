@@ -20,9 +20,8 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
     Long globalItemId = 0L;
 
     @Override
-    public Item save(Long userId, Item item) {
+    public Item save(Item item) {
         item.setId(generateId());
-        item.setOwnerId(userId);
         items.put(item.getId(), item);
         return items.get(item.getId());
     }
