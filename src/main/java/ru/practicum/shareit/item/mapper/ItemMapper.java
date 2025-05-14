@@ -3,9 +3,12 @@ package ru.practicum.shareit.item.mapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.NewItemDto;
+import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+
+import java.util.ArrayList;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
@@ -15,21 +18,23 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .rentalCount(item.getRentalCount())
+                .lastBooking(null)
+                .nextBooking(null)
+                .comments(new ArrayList<>())
                 .build();
     }
 
-    public static Item mapToItem(ItemDto itemDto) {
+    public static Item mapToItem(ItemDto itemDto, User owner) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
-                .rentalCount(itemDto.getRentalCount())
+                .owner(owner)
                 .build();
     }
 
-    public static Item mapToItemNew(NewItemRequest requestItemDto) {
+    public static Item mapToNewItem(NewItemDto requestItemDto) {
         return Item.builder()
                 .name(requestItemDto.getName())
                 .description(requestItemDto.getDescription())
@@ -37,7 +42,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static Item updateItemFields(Item item, UpdateItemRequest requestItemDto) {
+    public static Item updateItemFields(Item item, UpdateItemDto requestItemDto) {
         if (requestItemDto.hasName()) {
             item.setName(requestItemDto.getName());
         }

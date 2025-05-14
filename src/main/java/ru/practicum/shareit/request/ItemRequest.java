@@ -1,23 +1,35 @@
 package ru.practicum.shareit.request;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
+import ru.practicum.shareit.user.model.User;
 
 /**
  * TODO Sprint add-item-requests.
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@EqualsAndHashCode(of = {"itemRequestId"})
+@EqualsAndHashCode(of = {"id"})
+@Entity
+@Table(name = "item")
 public class ItemRequest {
-    Long itemRequestId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
+    Long id;
+
+    @Column(nullable = false)
     String description;
-    Long requestorId;
-    LocalDate created;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "requestor_id")
+    // исключаем все поля с отложенной загрузкой из
+    // метода toString, чтобы не было случайных обращений к
+    // базе данных, например при выводе в лог.
+    @ToString.Exclude
+    User requestor;
 }

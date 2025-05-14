@@ -1,20 +1,18 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateItemRequest {
+public class UpdateItemDto {
     Long id;
     String name;
     String description;
     Boolean available;
-    Long ownerId;
-    Long requestId;
 
     public boolean hasName() {
         return !(name == null || name.isBlank());
@@ -26,9 +24,5 @@ public class UpdateItemRequest {
 
     public boolean hasAvailable() {
         return !(available == null);
-    }
-
-    public boolean hasRequestId() {
-        return !(requestId == null  || requestId == 0);
     }
 }

@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -12,27 +14,32 @@ import ru.practicum.shareit.user.model.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "item")
-public class Item {
+@Table(name = "comment")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     Long id;
 
-    @Column(nullable = false)
-    String name;
-
-    @Column(nullable = false)
-    String description;
-
-    @Column(name = "is_available", nullable = false)
-    Boolean available;
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "item_id")
     // исключаем все поля с отложенной загрузкой из
     // метода toString, чтобы не было случайных обращений к
     // базе данных, например, при выводе в лог.
     @ToString.Exclude
-    User owner;
+    Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "author_id")
+    // исключаем все поля с отложенной загрузкой из
+    // метода toString, чтобы не было случайных обращений к
+    // базе данных, например, при выводе в лог.
+    @ToString.Exclude
+    User author;
+
+    @Column(nullable = false)
+    String text;
+
+    @Column(name = "created", nullable = false)
+    LocalDateTime created;
 }
