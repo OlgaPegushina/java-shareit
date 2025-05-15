@@ -17,6 +17,6 @@ public class NewItemDto {
     @NotBlank(message = "Описание не может быть пустым")
     String description;
 
-    @NotNull(message = "Отсутствует обязательный параметр \"Статус аренды\"")
+    @NotNull(message = "Статус аренды не может быть пустым")
     Boolean available;
 }

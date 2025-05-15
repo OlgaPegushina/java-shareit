@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.service.ItemService;
 
-
 import java.util.List;
 
 @RestController
@@ -50,7 +49,7 @@ public class ItemController {
     public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
                                  @PathVariable("itemId") Long itemId,
                                  @Valid @RequestBody NewCommentDto commentDto
-                                 ) {
+    ) {
         return itemService.addComment(userId, itemId, commentDto);
     }
 }
