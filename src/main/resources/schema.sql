@@ -24,11 +24,8 @@ CREATE TABLE IF NOT EXISTS item (
     description VARCHAR(1000) NOT NULL,
     is_available BOOLEAN NOT NULL,
     owner_id BIGINT NOT NULL,
-    --request_id BIGINT,
     CONSTRAINT fk_owner FOREIGN KEY (owner_id) REFERENCES users(id)
         ON UPDATE CASCADE ON DELETE CASCADE
-    --CONSTRAINT fk_request FOREIGN KEY (request_id) REFERENCES request(id)
-    --    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comment (
