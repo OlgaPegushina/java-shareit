@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS booking (
     item_id BIGINT NOT NULL,
     booker_id BIGINT NOT NULL,
     status VARCHAR(20) NOT NULL,
-    CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES item(id)
+    CONSTRAINT fk_item_booking FOREIGN KEY (item_id) REFERENCES item(id)
         ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_booker FOREIGN KEY (booker_id) REFERENCES users(id)
         ON UPDATE CASCADE ON DELETE CASCADE
