@@ -4,13 +4,13 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.exception.ForbiddenExeption;
-import ru.practicum.shareit.exception.InternalServerException;
+import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 
@@ -21,7 +21,6 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -38,7 +37,6 @@ public class ItemServiceImpl implements ItemService {
     ItemRepository itemRepository;
     UserService userService;
     BookingRepository bookingRepository;
-    UserRepository userRepository;
     CommentRepository commentRepository;
 
     @Override
@@ -52,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto findById(Long userId, Long itemId) {
         Item item = validateItemExist(itemId);
-        User user = userService.validateUserExist(userId);
+        userService.validateUserExist(userId);
 
         ItemDto itemDto = ItemMapper.mapToItemDto(item);
 
@@ -78,8 +76,7 @@ public class ItemServiceImpl implements ItemService {
         userService.validateUserExist(ownerId);
 
         List<ItemDto> itemDtos = itemRepository.findByOwnerIdOrderByIdAsc(ownerId).stream()
-                .map(ItemMapper::mapToItemDto)
-                .toList();
+                .map(ItemMapper::mapToItemDto).toList();
 
         itemDtos.forEach(this::loadDetails);
 
@@ -92,22 +89,21 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
         return itemRepository.findItemsByNameOrDescription(text).stream()
-                .map(ItemMapper::mapToItemDto)
-                .toList();
+                .map(ItemMapper::mapToItemDto).toList();
     }
 
     @Override
     public CommentDto addComment(Long userId, Long itemId, NewCommentDto commentDto) {
         Item item = validateItemExist(itemId);
+        User author = userService.validateUserExist(userId);
+        validateCommentAuthorAndDate(userId, itemId);
 
         Comment comment = CommentMapper.mapToComment(commentDto);
-        if (validateItemAndCommentAuthorAndDate(userId, itemId)) {
-            comment.setItem(item);
-            comment.setAuthor(userRepository.findById(userId).get());
-            comment.setCreated(LocalDateTime.now());
-            return CommentMapper.mapToCommentDto(commentRepository.save(comment));
-        }
-        throw new InternalServerException("Невозможно добавить отзыв. Проверьте данные бронирования");
+        comment.setItem(item);
+        comment.setAuthor(author);
+        comment.setCreated(LocalDateTime.now());
+
+        return CommentMapper.mapToCommentDto(commentRepository.save(comment));
     }
 
     private Item validateItemExist(Long itemId) {
@@ -115,8 +111,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException(String.format("Предмет аренды с id %d не найден.", itemId)));
     }
 
-    private boolean validateItemAndCommentAuthorAndDate(Long userId, Long itemId) {
-        validateItemExist(itemId);
+    private void validateCommentAuthorAndDate(Long userId, Long itemId) {
         List<Booking> bookings = bookingRepository.findAllByItemId(itemId);
 
         if (bookings.isEmpty()) {
@@ -126,36 +121,32 @@ public class ItemServiceImpl implements ItemService {
         Booking booking = bookings.stream()
                 .filter(booking1 -> booking1.getBooker().getId().equals(userId))
                 .findFirst()
-                .orElseThrow(() -> new ForbiddenExeption("Пользователь не имеет права оставлять комментарий, " +
-                                                         "так как не был арендатором!"));
+                .orElseThrow(() -> new ForbiddenException("Пользователь не имеет права оставлять комментарий, " +
+                                                          "так как не был арендатором!"));
 
         if (!(booking.getStatus() == BookingStatus.APPROVED)) {
-            throw new ForbiddenExeption("Пользователь не имеет подтвержденного бронирования!");
+            throw new ForbiddenException("Пользователь не имеет подтвержденного бронирования!");
         }
 
         if (!booking.getEnd().isBefore(LocalDateTime.now())) {
             throw new ValidationException("Пользователь не имеет завершенного бронирования!");
         }
-
-        return true;
     }
 
     @Transactional
     private void loadDetails(ItemDto itemDto) {
         List<Comment> comments = commentRepository.findAllByItemId(itemDto.getId());
-        itemDto.setComments(comments.stream()
-                .map(CommentMapper::mapToCommentDto)
-                .toList());
+        itemDto.setComments(comments.stream().map(CommentMapper::mapToCommentDto).toList());
 
-        List<Booking> bookings = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(itemDto.getId());
+        List<Booking> bookings = bookingRepository.findAllByItemOwnerIdOrderByStart(itemDto.getId(),
+                Sort.by(Sort.Direction.DESC, "start"));
 
         if (!bookings.isEmpty()) {
             Booking nextBooking = bookings.get(0);
             itemDto.setNextBooking(BookingMapper.mapToBookingDto(nextBooking));
 
             if (bookings.size() > 1) {
-                Booking lastBooking = bookings.get(1);
-                itemDto.setLastBooking(BookingMapper.mapToBookingDto(lastBooking));
+                itemDto.setLastBooking(BookingMapper.mapToBookingDto(bookings.get(1)));
             } else {
                 itemDto.setLastBooking(BookingMapper.mapToBookingDto(nextBooking));
             }

@@ -23,17 +23,11 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "item_id")
-    // исключаем все поля с отложенной загрузкой из
-    // метода toString, чтобы не было случайных обращений к
-    // базе данных, например, при выводе в лог.
     @ToString.Exclude
     Item item;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "author_id")
-    // исключаем все поля с отложенной загрузкой из
-    // метода toString, чтобы не было случайных обращений к
-    // базе данных, например, при выводе в лог.
     @ToString.Exclude
     User author;
 

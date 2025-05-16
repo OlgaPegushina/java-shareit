@@ -30,9 +30,6 @@ public class Item {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id")
-    // исключаем все поля с отложенной загрузкой из
-    // метода toString, чтобы не было случайных обращений к
-    // базе данных, например, при выводе в лог.
     @ToString.Exclude
     User owner;
 }

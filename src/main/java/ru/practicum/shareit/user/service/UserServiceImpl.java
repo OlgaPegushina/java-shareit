@@ -26,16 +26,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAll() {
-        return userRepository.findAll().stream()
-                .map(UserMapper::mapToUserDto)
-                .toList();
+        return userRepository.findAll().stream().map(UserMapper::mapToUserDto).toList();
     }
 
     @Override
     public UserDto create(NewUserDto userDto) {
         validateEmailExist(userDto.getEmail());
-        User user = mapToNewUser(userDto);
-        return mapToUserDto(userRepository.save(user));
+        return mapToUserDto(userRepository.save(mapToNewUser(userDto)));
     }
 
     @Override

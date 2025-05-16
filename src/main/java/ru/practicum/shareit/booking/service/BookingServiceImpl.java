@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -11,7 +12,7 @@ import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.exception.ForbiddenExeption;
+import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -48,8 +49,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto findById(Long userId, Long bookingId) {
-        Booking booking = validateBooking(userId,bookingId);
-        return BookingMapper.mapToBookingDto(booking);
+        return BookingMapper.mapToBookingDto(validateBooking(userId,bookingId));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = validateBookingExist(bookingId);
         Item item = booking.getItem();
         if (!item.getOwner().getId().equals(userId)) {
-            throw new ForbiddenExeption("Данная вещь не принадлежит этому пользователю");
+            throw new ForbiddenException("Данная вещь не принадлежит этому пользователю");
         }
 
         if (approved) {
@@ -66,38 +66,45 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(BookingStatus.REJECTED);
         }
 
-        booking = bookingRepository.save(booking);
-        return BookingMapper.mapToBookingDto(booking);
+        return BookingMapper.mapToBookingDto(bookingRepository.save(booking));
     }
 
     @Override
     public List<BookingDto> findAllBookingsByBookerId(Long bookerId, BookingState state) {
         userService.validateUserExist(bookerId);
+
         List<Booking> bookings;
         LocalDateTime now = LocalDateTime.now();
+        Sort sortOrder = Sort.by(Sort.Direction.DESC, "start");
+
         switch (state) {
             case BookingState.WAITING: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(bookerId, BookingStatus.WAITING));
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStatusOrderByStart(bookerId,
+                        BookingStatus.WAITING, sortOrder));
                 break;
             }
             case BookingState.REJECTED: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStatusInOrderByStartDesc(bookerId, List.of(BookingStatus.REJECTED, BookingStatus.CANCELED)));
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStatusInOrderByStart(bookerId,
+                        List.of(BookingStatus.REJECTED, BookingStatus.CANCELED), sortOrder));
                 break;
             }
             case BookingState.CURRENT: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqualOrderByStartDesc(bookerId, now, now));
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqualOrderByStart(bookerId,
+                        now, now, sortOrder));
                 break;
             }
             case BookingState.FUTURE: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(bookerId, now));
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStartAfterOrderByStart(bookerId,
+                        now, sortOrder));
                 break;
             }
             case BookingState.PAST: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(bookerId, now));
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndEndBeforeOrderByStart(bookerId,
+                        now, sortOrder));
                 break;
             }
             case BookingState.ALL: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdOrderByStartDesc(bookerId));
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdOrderByStart(bookerId, sortOrder));
                 break;
             }
             default:
@@ -109,6 +116,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> findAllBookingsByOwnerId(Long ownerId, BookingState state) {
         userService.validateUserExist(ownerId);
+
         List<Item> userItemsIds = itemRepository.findByOwnerIdOrderByIdAsc(ownerId);
 
         if (userItemsIds.isEmpty()) {
@@ -117,37 +125,42 @@ public class BookingServiceImpl implements BookingService {
 
         List<Booking> bookings;
         LocalDateTime now = LocalDateTime.now();
+        Sort sortOrder = Sort.by(Sort.Direction.DESC, "start");
+
         switch (state) {
             case BookingState.WAITING: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.WAITING));
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStatusOrderByStart(ownerId,
+                        BookingStatus.WAITING, sortOrder));
                 break;
             }
             case BookingState.REJECTED: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.REJECTED));
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStatusOrderByStart(ownerId,
+                        BookingStatus.REJECTED, sortOrder));
                 break;
             }
             case BookingState.CURRENT: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStartLessThanEqualAndEndGreaterThanEqualOrderByStartDesc(ownerId, now,now));
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStartLessThanEqualAndEndGreaterThanEqualOrderByStart(ownerId,
+                        now, now, sortOrder));
                 break;
             }
             case BookingState.FUTURE: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStartAfterOrderByStartDesc(ownerId, now));
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStartAfterOrderByStart(ownerId,
+                        now, sortOrder));
                 break;
             }
             case BookingState.PAST: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(ownerId, now));
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndEndBeforeOrderByStart(ownerId,
+                        now, sortOrder));
                 break;
             }
             case BookingState.ALL: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdOrderByStartDesc(ownerId));
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdOrderByStart(ownerId, sortOrder));
                 break;
             }
             default:
                 bookings = new ArrayList<>();
         }
-        return bookings.stream()
-                .map(BookingMapper::mapToBookingDto)
-                .toList();
+        return bookings.stream().map(BookingMapper::mapToBookingDto).toList();
     }
 
     private Booking validateBookingExist(Long bookingId) {
@@ -160,8 +173,9 @@ public class BookingServiceImpl implements BookingService {
         User user = userService.validateUserExist(userId);
         Booking booking = validateBookingExist(bookingId);
         Item item = booking.getItem();
+
         if (!booking.getBooker().equals(user) && !item.getOwner().equals(user)) {
-            throw new ForbiddenExeption("Данная бронь не имеет отношения к пользователю");
+            throw new ForbiddenException("Данная бронь не имеет отношения к пользователю");
         }
 
         return booking;
