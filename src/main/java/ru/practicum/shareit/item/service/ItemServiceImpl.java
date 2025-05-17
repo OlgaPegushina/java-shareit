@@ -124,7 +124,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new ForbiddenException("Пользователь не имеет права оставлять комментарий, " +
                                                           "так как не был арендатором!"));
 
-        if (!(booking.getStatus() == BookingStatus.APPROVED)) {
+        if (booking.getStatus() != BookingStatus.APPROVED) {
             throw new ForbiddenException("Пользователь не имеет подтвержденного бронирования!");
         }
 
@@ -138,7 +138,7 @@ public class ItemServiceImpl implements ItemService {
         List<Comment> comments = commentRepository.findAllByItemId(itemDto.getId());
         itemDto.setComments(comments.stream().map(CommentMapper::mapToCommentDto).toList());
 
-        List<Booking> bookings = bookingRepository.findAllByItemOwnerIdOrderByStart(itemDto.getId(),
+        List<Booking> bookings = bookingRepository.findAllByItemOwnerId(itemDto.getId(),
                 Sort.by(Sort.Direction.DESC, "start"));
 
         if (!bookings.isEmpty()) {

@@ -11,44 +11,44 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     //findAllByItemOwnerId
     //ALL
-    List<Booking> findAllByItemOwnerIdOrderByStart(Long ownerId, Sort sortOrder);
+    List<Booking> findAllByItemOwnerId(Long ownerId, Sort sortOrder);
 
     //STAT Wait, reject
-    List<Booking> findAllByItemOwnerIdAndStatusOrderByStart(Long ownerId, BookingStatus status, Sort sortOrder);
+    List<Booking> findAllByItemOwnerIdAndStatus(Long ownerId, BookingStatus status, Sort sortOrder);
 
     //CURRENT
-    List<Booking> findAllByItemOwnerIdAndStartLessThanEqualAndEndGreaterThanEqualOrderByStart(Long ownerId,
-                                                                                              LocalDateTime now1,
-                                                                                              LocalDateTime now2,
-                                                                                              Sort sortOrder);
+    List<Booking> findAllByItemOwnerIdAndStartLessThanEqualAndEndGreaterThanEqual(Long ownerId,
+                                                                                  LocalDateTime now1,
+                                                                                  LocalDateTime now2,
+                                                                                  Sort sortOrder);
 
     //FUTURE
-    List<Booking> findAllByItemOwnerIdAndStartAfterOrderByStart(Long ownerId, LocalDateTime now, Sort sortOrder);
+    List<Booking> findAllByItemOwnerIdAndStartAfter(Long ownerId, LocalDateTime now, Sort sortOrder);
 
     //PAST
-    List<Booking> findAllByItemOwnerIdAndEndBeforeOrderByStart(Long ownerId, LocalDateTime now, Sort sortOrder);
+    List<Booking> findAllByItemOwnerIdAndEndBefore(Long ownerId, LocalDateTime now, Sort sortOrder);
 
     //findAllByBookerId
     //ALL
-    List<Booking> findAllByBookerIdOrderByStart(Long bookerId, Sort sortOrder);
+    List<Booking> findAllByBookerId(Long bookerId, Sort sortOrder);
 
     //WAITING
-    List<Booking> findAllByBookerIdAndStatusOrderByStart(Long bookerId, BookingStatus status, Sort sortOrder);
+    List<Booking> findAllByBookerIdAndStatus(Long bookerId, BookingStatus status, Sort sortOrder);
 
     //REJECTED, CANCELED
-    List<Booking> findAllByBookerIdAndStatusInOrderByStart(Long bookerId, List<BookingStatus> statuses, Sort sortOrder);
+    List<Booking> findAllByBookerIdAndStatusIn(Long bookerId, List<BookingStatus> statuses, Sort sortOrder);
 
     //CURRENT
-    List<Booking> findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqualOrderByStart(Long bookerId,
-                                                                                           LocalDateTime now1,
-                                                                                           LocalDateTime now2,
-                                                                                           Sort sortOrder);
+    List<Booking> findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqual(Long bookerId,
+                                                                               LocalDateTime now1,
+                                                                               LocalDateTime now2,
+                                                                               Sort sortOrder);
 
     //FUTURE
-    List<Booking> findAllByBookerIdAndStartAfterOrderByStart(Long bookerId, LocalDateTime now, Sort sortOrder);
+    List<Booking> findAllByBookerIdAndStartAfter(Long bookerId, LocalDateTime now, Sort sortOrder);
 
     //PAST
-    List<Booking> findAllByBookerIdAndEndBeforeOrderByStart(Long bookerId, LocalDateTime now, Sort sortOrder);
+    List<Booking> findAllByBookerIdAndEndBefore(Long bookerId, LocalDateTime now, Sort sortOrder);
 
     //other
     List<Booking> findAllByItemId(Long itemId);

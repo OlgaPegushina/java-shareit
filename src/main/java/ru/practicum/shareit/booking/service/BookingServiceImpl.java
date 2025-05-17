@@ -79,32 +79,32 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case BookingState.WAITING: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStatusOrderByStart(bookerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStatus(bookerId,
                         BookingStatus.WAITING, sortOrder));
                 break;
             }
             case BookingState.REJECTED: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStatusInOrderByStart(bookerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStatusIn(bookerId,
                         List.of(BookingStatus.REJECTED, BookingStatus.CANCELED), sortOrder));
                 break;
             }
             case BookingState.CURRENT: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqualOrderByStart(bookerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqual(bookerId,
                         now, now, sortOrder));
                 break;
             }
             case BookingState.FUTURE: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStartAfterOrderByStart(bookerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndStartAfter(bookerId,
                         now, sortOrder));
                 break;
             }
             case BookingState.PAST: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndEndBeforeOrderByStart(bookerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdAndEndBefore(bookerId,
                         now, sortOrder));
                 break;
             }
             case BookingState.ALL: {
-                bookings = new ArrayList<>(bookingRepository.findAllByBookerIdOrderByStart(bookerId, sortOrder));
+                bookings = new ArrayList<>(bookingRepository.findAllByBookerId(bookerId, sortOrder));
                 break;
             }
             default:
@@ -129,32 +129,32 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case BookingState.WAITING: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStatusOrderByStart(ownerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStatus(ownerId,
                         BookingStatus.WAITING, sortOrder));
                 break;
             }
             case BookingState.REJECTED: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStatusOrderByStart(ownerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStatus(ownerId,
                         BookingStatus.REJECTED, sortOrder));
                 break;
             }
             case BookingState.CURRENT: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStartLessThanEqualAndEndGreaterThanEqualOrderByStart(ownerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStartLessThanEqualAndEndGreaterThanEqual(ownerId,
                         now, now, sortOrder));
                 break;
             }
             case BookingState.FUTURE: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStartAfterOrderByStart(ownerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndStartAfter(ownerId,
                         now, sortOrder));
                 break;
             }
             case BookingState.PAST: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndEndBeforeOrderByStart(ownerId,
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdAndEndBefore(ownerId,
                         now, sortOrder));
                 break;
             }
             case BookingState.ALL: {
-                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerIdOrderByStart(ownerId, sortOrder));
+                bookings = new ArrayList<>(bookingRepository.findAllByItemOwnerId(ownerId, sortOrder));
                 break;
             }
             default:
