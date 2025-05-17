@@ -34,6 +34,12 @@ public class ErrorHandler {
         return new ExceptionResponse("Ошибка валидации", e.getMessage());
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ExceptionResponse forbiddenExceptionHandle(Exception e) {
+        return new ExceptionResponse("Доступ запрещен", e.getMessage());
+    }
+
     @Getter
     @AllArgsConstructor
     public static class ExceptionResponse {
