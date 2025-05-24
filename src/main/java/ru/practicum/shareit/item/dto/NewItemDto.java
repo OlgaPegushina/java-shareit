@@ -19,4 +19,6 @@ public class NewItemDto {
 
     @NotNull(message = "Статус аренды не может быть пустым")
     Boolean available;
+
+    Long requestId;
 }

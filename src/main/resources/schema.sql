@@ -13,8 +13,9 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS request (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     description VARCHAR(1000) NOT NULL,
-    requestor_id BIGINT NOT NULL,
-    CONSTRAINT fk_requestor FOREIGN KEY (requestor_id) REFERENCES users(id)
+    requester_id BIGINT NOT NULL,
+    created TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_requester FOREIGN KEY (requester_id) REFERENCES users(id)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -24,7 +25,10 @@ CREATE TABLE IF NOT EXISTS item (
     description VARCHAR(1000) NOT NULL,
     is_available BOOLEAN NOT NULL,
     owner_id BIGINT NOT NULL,
+    request_id BIGINT,
     CONSTRAINT fk_owner FOREIGN KEY (owner_id) REFERENCES users(id)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_request FOREIGN KEY (request_id) REFERENCES request(id)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 

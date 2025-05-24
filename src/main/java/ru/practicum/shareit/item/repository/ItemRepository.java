@@ -12,4 +12,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT i FROM Item i WHERE (i.name ILIKE %:text% OR i.description ILIKE %:text%) AND i.available = true")
     List<Item> findItemsByNameOrDescription(@Param("text") String text);
+
+    List<Item> findByRequestIdOrderByRequestIdDesc(Long requestId);
 }

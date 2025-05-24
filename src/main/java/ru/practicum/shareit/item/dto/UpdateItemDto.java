@@ -13,6 +13,7 @@ public class UpdateItemDto {
     String name;
     String description;
     Boolean available;
+    Long requestId;
 
     public boolean hasName() {
         return !(name == null || name.isBlank());
@@ -25,4 +26,5 @@ public class UpdateItemDto {
     public boolean hasAvailable() {
         return !(available == null);
     }
+
 }

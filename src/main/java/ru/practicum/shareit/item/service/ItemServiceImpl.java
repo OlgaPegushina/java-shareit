@@ -13,14 +13,15 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-
-import ru.practicum.shareit.item.mapper.CommentMapper;
-import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.Request;
+import ru.practicum.shareit.request.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -38,12 +39,20 @@ public class ItemServiceImpl implements ItemService {
     UserService userService;
     BookingRepository bookingRepository;
     CommentRepository commentRepository;
+    RequestRepository requestRepository;
 
     @Override
     public ItemDto create(Long userId, NewItemDto itemDto) {
         User owner = userService.validateUserExist(userId);
         Item item = mapToNewItem(itemDto);
         item.setOwner(owner);
+
+        if (itemDto.getRequestId() != null) {
+            Request request = requestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException("Запрос не найден."));
+            item.setRequest(request);
+        }
+
         return mapToItemDto(itemRepository.save(item));
     }
 
@@ -66,6 +75,12 @@ public class ItemServiceImpl implements ItemService {
         if (!item.getOwner().getId().equals(userId)) {
             throw new ValidationException("Предмет аренды не принадлежит данному пользователю");
         }
+        if (itemDto.getRequestId() != null) {
+            Request request = requestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException("Запрос не найден."));
+            item.setRequest(request);
+        }
+
         updateItemFields(item, itemDto);
         item = itemRepository.save(item);
         return mapToItemDto(item);
