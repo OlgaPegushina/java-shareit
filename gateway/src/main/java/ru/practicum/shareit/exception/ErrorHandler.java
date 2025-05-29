@@ -10,31 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice()
 public class ErrorHandler {
-    /*@ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionResponse repositoryNotFoundExceptionHandle(Exception e) {
-        return new ExceptionResponse("Запрашиваемый ресурс не найден", e.getMessage());
-    }
-
-    @ExceptionHandler(DuplicatedDataException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ExceptionResponse repositoryDuplicatedDataExceptionHandle(Exception e) {
-        return new ExceptionResponse("Ресурс дублируется", e.getMessage());
-    }
-
-
-    @ExceptionHandler({MethodArgumentNotValidException.class, ValidationException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse validationExceptionHandle(Exception e) {
-        return new ExceptionResponse("Ошибка валидации", e.getMessage());
-    }
-
-    @ExceptionHandler(ForbiddenException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ExceptionResponse forbiddenExceptionHandle(Exception e) {
-        return new ExceptionResponse("Доступ запрещен", e.getMessage());
-    }*/
-
     @ExceptionHandler({MethodArgumentNotValidException.class, IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse validationExceptionHandle(Exception e) {

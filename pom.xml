@@ -94,7 +94,7 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!--<plugin>
+                <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.12</version>
@@ -126,17 +126,17 @@
                                             <limit>
                                                 <counter>LINE</counter>
                                                 <value>COVEREDRATIO</value>
-                                                <minimum>0.9</minimum>
+                                                <minimum>0.7</minimum>
                                             </limit>
                                             <limit>
                                                 <counter>BRANCH</counter>
                                                 <value>COVEREDRATIO</value>
-                                                <minimum>0.6</minimum>
+                                                <minimum>0.3</minimum>
                                             </limit>
                                             <limit>
                                                 <counter>COMPLEXITY</counter>
                                                 <value>COVEREDRATIO</value>
-                                                <minimum>0.6</minimum>
+                                                <minimum>0.5</minimum>
                                             </limit>
                                             <limit>
                                                 <counter>METHOD</counter>
@@ -146,7 +146,7 @@
                                             <limit>
                                                 <counter>CLASS</counter>
                                                 <value>MISSEDCOUNT</value>
-                                                <maximum>1</maximum>
+                                                <maximum>5</maximum>
                                             </limit>
                                         </limits>
                                     </rule>
@@ -161,7 +161,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>-->
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

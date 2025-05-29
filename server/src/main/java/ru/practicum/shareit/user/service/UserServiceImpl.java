@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.UserMapper;
@@ -21,6 +22,7 @@ import static ru.practicum.shareit.user.UserMapper.*;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
@@ -29,6 +31,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll().stream().map(UserMapper::mapToUserDto).toList();
     }
 
+    @Transactional
     @Override
     public UserDto create(NewUserDto userDto) {
         validateEmailExist(userDto.getEmail());
@@ -40,6 +43,7 @@ public class UserServiceImpl implements UserService {
         return mapToUserDto(validateUserExist(userId));
     }
 
+    @Transactional
     @Override
     public UserDto update(Long userId, UpdateUserDto userDto) {
         User user = validateUserExist(userId);
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService {
         return mapToUserDto(user);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long userId) {
         validateUserExist(userId);

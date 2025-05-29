@@ -12,11 +12,11 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.request.RequestMapper;
 import ru.practicum.shareit.request.RequestRepository;
 import ru.practicum.shareit.request.dto.NewRequestDto;
 import ru.practicum.shareit.request.dto.RequestDto;
+import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -25,11 +25,13 @@ import java.util.List;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RequestServiceImpl implements RequestService {
     RequestRepository requestRepository;
     UserService userService;
     ItemRepository itemRepository;
 
+    @Transactional
     @Override
     public RequestDto create(Long userId, NewRequestDto newRequestDto) {
         User requester = userService.validateUserExist(userId);

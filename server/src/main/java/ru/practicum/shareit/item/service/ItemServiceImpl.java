@@ -1,11 +1,11 @@
 package ru.practicum.shareit.item.service;
 
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
@@ -33,6 +33,7 @@ import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     ItemRepository itemRepository;
     UserService userService;
@@ -40,6 +41,7 @@ public class ItemServiceImpl implements ItemService {
     CommentRepository commentRepository;
     RequestRepository requestRepository;
 
+    @Transactional
     @Override
     public ItemDto create(Long userId, NewItemDto itemDto) {
         User owner = userService.validateUserExist(userId);
@@ -67,6 +69,7 @@ public class ItemServiceImpl implements ItemService {
         return itemDto;
     }
 
+    @Transactional
     @Override
     public ItemDto update(Long userId, Long itemId, UpdateItemDto itemDto) {
         userService.validateUserExist(userId);
@@ -107,6 +110,7 @@ public class ItemServiceImpl implements ItemService {
                 .map(ItemMapper::mapToItemDto).toList();
     }
 
+    @Transactional
     @Override
     public CommentDto addComment(Long userId, Long itemId, NewCommentDto newCommentDto) {
         Item item = validateItemExist(itemId);

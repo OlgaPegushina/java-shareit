@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -15,8 +16,8 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -27,11 +28,13 @@ import java.util.List;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
     BookingRepository bookingRepository;
     UserService userService;
     ItemRepository itemRepository;
 
+    @Transactional
     @Override
     public BookingDto create(Long userId, NewBookingDto newBookingDto) {
         validateDate(newBookingDto);
@@ -49,9 +52,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto findById(Long userId, Long bookingId) {
-        return BookingMapper.mapToBookingDto(validateBooking(userId,bookingId));
+        return BookingMapper.mapToBookingDto(validateBooking(userId, bookingId));
     }
 
+    @Transactional
     @Override
     public BookingDto updateStatusBooking(Long userId, Long bookingId, boolean approved) {
         Booking booking = validateBookingExist(bookingId);
