@@ -89,7 +89,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenItemIsNotAvailable() {
+    void throwExceptionWhenItemIsNotAvailable() {
         UserDto user3 = userService.create(user1);
         UserDto user4 = userService.create(user2);
         NewItemDto item2 = NewItemDto.builder()
@@ -158,7 +158,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUserIsNotOwnerWhenUpdateBooking() {
+    void throwExceptionWhenUserIsNotOwnerWhenUpdateBooking() {
         UserDto user3 = userService.create(user1);
         UserDto user4 = userService.create(user2);
         ItemDto item = itemService.create(user3.getId(), item1);
@@ -205,7 +205,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void shouldGetBookingsByUser() {
+    void getBookingsByUser() {
         UserDto user3 = userService.create(user1);
         UserDto user4 = userService.create(user2);
         ItemDto item = itemService.create(user3.getId(), item1);
@@ -227,7 +227,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void shouldGetBookingsByOwner() {
+    void getBookingsByOwner() {
         UserDto user3 = userService.create(user1);
         UserDto user4 = userService.create(user2);
         ItemDto item = itemService.create(user3.getId(), item1);
