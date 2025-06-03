@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice()
 public class ErrorHandler {
-    @ExceptionHandler({MethodArgumentNotValidException.class, IllegalArgumentException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse validationExceptionHandle(Exception e) {
-        return new ExceptionResponse("Ошибка валидации", e.getMessage());
+    public ExceptionResponse methodArgumentValidationExceptionHandle(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        return new ExceptionResponse("Ошибка валидации", message);
     }
 
     @ExceptionHandler({Throwable.class})

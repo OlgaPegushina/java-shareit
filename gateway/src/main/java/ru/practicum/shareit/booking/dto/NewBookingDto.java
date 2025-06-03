@@ -14,14 +14,14 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewBookingDto {
-    @NotNull
-    @FutureOrPresent
+    @NotNull(message = "Дата старта брони должна быть")
+    @FutureOrPresent(message = "Дата старта брони не должна быть в прошлом")
     LocalDateTime start;
 
-    @NotNull
-    @Future
+    @NotNull(message = "Дата окончания брони должна быть")
+    @Future(message = "Дата окончания брони должна быть в будущем")
     LocalDateTime end;
 
-    @NotNull
+    @NotNull(message = "Необходим идентификатор вещи")
     Long itemId;
 }
