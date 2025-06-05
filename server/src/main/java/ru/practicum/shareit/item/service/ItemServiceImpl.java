@@ -141,7 +141,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    @Transactional
     private void loadDetails(ItemDto itemDto) {
         List<Comment> comments = commentRepository.findAllByItemId(itemDto.getId());
         itemDto.setComments(comments.stream().map(CommentMapper::mapToCommentDto).toList());

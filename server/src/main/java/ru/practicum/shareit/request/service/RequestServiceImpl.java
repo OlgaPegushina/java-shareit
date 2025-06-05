@@ -79,7 +79,6 @@ public class RequestServiceImpl implements RequestService {
         return requestDto;
     }
 
-    @Transactional
     private void loadDetails(RequestDto requestDto) {
 
         List<ItemDto> itemDtos = itemRepository.findByRequestIdOrderByRequestIdDesc(requestDto.getId()).stream()
